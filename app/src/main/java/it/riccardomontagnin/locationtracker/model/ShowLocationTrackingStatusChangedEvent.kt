@@ -1,0 +1,3 @@
+package it.riccardomontagnin.locationtracker.model
+
+data class ShowLocationTrackingStatusChangedEvent(val trackingEnabled: Boolean)
