@@ -1,4 +1,4 @@
-package it.riccardomontagnin.locationtracker.pages.map.view
+package it.riccardomontagnin.locationtracker.pages.journey.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -18,9 +18,10 @@ import it.riccardomontagnin.locationtracker.R
 import it.riccardomontagnin.locationtracker.application.LocationTrackerApp
 import it.riccardomontagnin.locationtracker.injector.CoreComponent
 import it.riccardomontagnin.locationtracker.model.LocationData
-import it.riccardomontagnin.locationtracker.model.ShowLocationTrackingStatusChangedEvent
-import it.riccardomontagnin.locationtracker.pages.map.presenter.JourneyPresenter
-import it.riccardomontagnin.locationtracker.pages.map.presenter.JourneyView
+import it.riccardomontagnin.locationtracker.model.event.JourneyStatusChangedEvent
+import it.riccardomontagnin.locationtracker.model.event.ShowLocationTrackingStatusChangedEvent
+import it.riccardomontagnin.locationtracker.pages.journey.presenter.JourneyPresenter
+import it.riccardomontagnin.locationtracker.pages.journey.presenter.JourneyView
 import net.grandcentrix.thirtyinch.TiFragment
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -92,6 +93,7 @@ class JourneyFragment: TiFragment<JourneyPresenter, JourneyView>(), JourneyView,
 
     @Subscribe(sticky = true)
     internal fun locationTrackingStatusListener(event: ShowLocationTrackingStatusChangedEvent) {
+        EventBus.getDefault().removeStickyEvent(event)
         presenter.setLocationTrackingEnabled(event.trackingEnabled)
     }
 
@@ -107,7 +109,7 @@ class JourneyFragment: TiFragment<JourneyPresenter, JourneyView>(), JourneyView,
 
         // Create a marker representing the current location of the user
         val marker = MarkerOptions()
-                .title(getString(R.string.map_marker_current_location))
+                .title(getString(R.string.map_marker_last_known_location))
                 .position(locationData)
 
         // Clear all the markers already present
@@ -151,11 +153,21 @@ class JourneyFragment: TiFragment<JourneyPresenter, JourneyView>(), JourneyView,
     }
 
     override fun clearJourney() {
+        val lastLocation = journeyPoints
+                .lastOrNull()
+                ?.let { LocationData(it.longitude, it.latitude) }
+
         journeyPoints.clear()
-        redrawPath()
+        redrawPath(lastLocation)
     }
 
-    override fun showJourneySavedPopup() {
-        Toast.makeText(activity!!, R.string.popup_journey_saved, Toast.LENGTH_LONG).show()
+    override fun showJourneyStartedPopup() {
+        Toast.makeText(activity!!, R.string.popup_journey_started, Toast.LENGTH_LONG).show()
     }
+
+    override fun showJourneyEndedPopup() {
+        EventBus.getDefault().postSticky(JourneyStatusChangedEvent(false))
+        Toast.makeText(activity!!, R.string.popup_journey_ended, Toast.LENGTH_LONG).show()
+    }
+
 }

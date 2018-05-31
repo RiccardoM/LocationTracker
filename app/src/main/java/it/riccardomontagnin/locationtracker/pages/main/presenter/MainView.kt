@@ -10,13 +10,6 @@ interface MainView: TiView {
     fun requestPermissions()
 
     /**
-     * Shows the popup telling the user if the location tracking is in progress or not.
-     * @param locationInProgress: `true` if the location tracking has been enabled, `false` if the
-     * tracking has been disables.
-     */
-    fun setLocationTrackingEnabledPopup(locationInProgress: Boolean)
-
-    /**
      * Shows the journey view representing all the data about the current journey of the user.
      */
     fun showJourneyView()
@@ -29,8 +22,4 @@ interface MainView: TiView {
      */
     fun setJourneyInProgressVisible(enabled: Boolean)
 
-    /**
-     * Shows the view inside which the user can see all the journeys he has done in the past.
-     */
-    fun showJourneyListView()
 }

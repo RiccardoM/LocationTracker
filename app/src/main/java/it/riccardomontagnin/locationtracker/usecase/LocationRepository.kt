@@ -33,11 +33,5 @@ interface LocationRepository {
      */
     fun getLocationUpdates(): Observable<LocationData>
 
-    /**
-     * Gets all the location updates since the last journey has started.
-     * @return Returns an [Observable] that never stops emitting the location data. Once subscribed,
-     * it will immediately emit all the location updates ever emitted since the start of the tracking.
-     */
-    fun getJourneyLocationUpdates(): Observable<LocationData>
 
 }

@@ -3,6 +3,7 @@ package it.riccardomontagnin.locationtracker.injector
 import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
+import it.riccardomontagnin.locationtracker.usecase.JourneyRepository
 import it.riccardomontagnin.locationtracker.usecase.LocationRepository
 import it.riccardomontagnin.locationtracker.usecase.SettingsRepository
 
@@ -11,6 +12,7 @@ interface CoreComponent {
 
     fun locationRepository(): LocationRepository
     fun settingsRepository(): SettingsRepository
+    fun journeyRepository(): JourneyRepository
 
     @Component.Builder
     interface Builder {

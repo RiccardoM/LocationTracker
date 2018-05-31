@@ -55,7 +55,6 @@ class MainPresenter @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    view?.setLocationTrackingEnabledPopup(true)
                     view?.setJourneyInProgressVisible(true)
                     view?.showJourneyView()
                 }, { Timber.wtf(it) }))
@@ -66,9 +65,7 @@ class MainPresenter @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    view?.setLocationTrackingEnabledPopup(false)
                     view?.setJourneyInProgressVisible(false)
-                    view?.showJourneyListView()
                 }))
     }
 

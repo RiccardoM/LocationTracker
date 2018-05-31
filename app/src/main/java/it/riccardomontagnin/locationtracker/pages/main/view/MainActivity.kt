@@ -12,11 +12,10 @@ import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import it.riccardomontagnin.locationtracker.R
 import it.riccardomontagnin.locationtracker.application.LocationTrackerApp
 import it.riccardomontagnin.locationtracker.injector.CoreComponent
-import it.riccardomontagnin.locationtracker.model.ShowLocationTrackingStatusChangedEvent
+import it.riccardomontagnin.locationtracker.model.event.ShowLocationTrackingStatusChangedEvent
 import it.riccardomontagnin.locationtracker.pages.main.presenter.MainPresenter
 import it.riccardomontagnin.locationtracker.pages.main.presenter.MainView
 import net.grandcentrix.thirtyinch.TiActivity
@@ -135,17 +134,6 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
     /**
      * @inheritDoc
      */
-    override fun setLocationTrackingEnabledPopup(locationInProgress: Boolean) {
-        val message = when(locationInProgress) {
-            true -> getString(R.string.popup_location_tracking_started)
-            else -> getString(R.string.popup_location_tracking_stopped)
-        }
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-
-    /**
-     * @inheritDoc
-     */
     override fun showJourneyView() {
         // Shows the first tab, which is the one with the journey view inside
         tabLayout.getTabAt(0)?.select()
@@ -166,15 +154,6 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
         }
         fab.setImageResource(icon)
     }
-
-    /**
-     * @inheritDoc
-     */
-    override fun showJourneyListView() {
-        // Shows the second tab, which is the one with the journey list view inside
-        tabLayout.getTabAt(1)?.select()
-    }
-
 
 
     companion object {

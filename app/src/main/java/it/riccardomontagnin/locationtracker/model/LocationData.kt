@@ -8,5 +8,5 @@ import java.util.*
 data class LocationData (
         val longitude: Double,
         val latitude: Double,
-        val date: Date
+        val date: Date = Date()
 ): Parcelable

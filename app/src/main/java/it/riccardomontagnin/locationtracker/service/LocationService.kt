@@ -13,7 +13,7 @@ import android.os.IBinder
 import android.support.v4.app.ActivityCompat
 import com.google.android.gms.location.LocationServices
 import it.riccardomontagnin.locationtracker.model.LocationData
-import it.riccardomontagnin.locationtracker.model.LocationUpdateEvent
+import it.riccardomontagnin.locationtracker.model.event.LocationUpdateEvent
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import java.util.*
@@ -71,30 +71,12 @@ class LocationService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.d("Location service started")
         startForeground()
+        startLocationTracking()
         super.onStartCommand(intent, flags, startId)
         return Service.START_STICKY
     }
 
-    private fun startForeground() {
-        // Set it foreground
-        //        val notificationIntent = Intent(this, MainActivity::class.java)
-        //
-        //        val pendingIntent = PendingIntent.getActivity(this, 0,
-        //                notificationIntent, 0)
-        //
-        //        val notification = NotificationCompat.Builder(this, "")
-        ////                .setSmallIcon(R.mipmap.ic_launcher)
-        //                .setContentTitle("My Awesome App")
-        //                .setContentText("Doing some work...")
-        //                .setContentIntent(pendingIntent).build()
-        //
-        //        startForeground(1337, notification)
-    }
-
-    /**
-     * Creates the service.
-     */
-    override fun onCreate() {
+    private fun startLocationTracking() {
         // Get the location manager so that we can get the user location
         if (locationManager == null) {
             locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -133,6 +115,22 @@ class LocationService : Service() {
         }
     }
 
+    private fun startForeground() {
+        // Set it foreground
+        //        val notificationIntent = Intent(this, MainActivity::class.java)
+        //
+        //        val pendingIntent = PendingIntent.getActivity(this, 0,
+        //                notificationIntent, 0)
+        //
+        //        val notification = NotificationCompat.Builder(this, "")
+        ////                .setSmallIcon(R.mipmap.ic_launcher)
+        //                .setContentTitle("My Awesome App")
+        //                .setContentText("Doing some work...")
+        //                .setContentIntent(pendingIntent).build()
+        //
+        //        startForeground(1337, notification)
+    }
+
     /**
      * Checks for the network position.
      * @return Returns `true` if the user has granted the permission, `false` otherwise.
@@ -156,6 +154,8 @@ class LocationService : Service() {
      * about the available update.
      */
     internal fun postLocation(location: Location) {
+        Timber.d("New location: $location")
+
         // Check to be sure that this location is not fake
         if (location.latitude != 0.0 && location.longitude != 0.0) {
             // Post the location update to EventBus in order to notify the observers

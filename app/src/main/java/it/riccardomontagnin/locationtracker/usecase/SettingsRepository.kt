@@ -29,6 +29,6 @@ interface SettingsRepository {
     fun <T: Any> getSettingValue(name: String, type: KClass<T>, defaultValue: T): Single<T>
 
     companion object {
-        const val SETTING_TRACKING_ENABLED = "tracking enabled"
+        const val SETTING_LAST_LOCATION = "tracking enabled"
     }
 }

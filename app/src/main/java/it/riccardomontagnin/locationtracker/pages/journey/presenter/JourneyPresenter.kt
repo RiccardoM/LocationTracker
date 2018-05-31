@@ -1,21 +1,20 @@
-package it.riccardomontagnin.locationtracker.pages.map.presenter
+package it.riccardomontagnin.locationtracker.pages.journey.presenter
 
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import it.riccardomontagnin.locationtracker.usecase.JourneyRepository
 import it.riccardomontagnin.locationtracker.usecase.LocationRepository
 import net.grandcentrix.thirtyinch.TiPresenter
 import net.grandcentrix.thirtyinch.rx2.RxTiPresenterDisposableHandler
+import timber.log.Timber
 import javax.inject.Inject
 
 class JourneyPresenter @Inject constructor(
-        private val locationRepository: LocationRepository
+        private val locationRepository: LocationRepository,
+        private val journeyRepository: JourneyRepository
 ): TiPresenter<JourneyView>() {
 
     private var trackingEnabled: Boolean = false
-    private var locationDisposable: Disposable? = null
-    private var journeyDisposable: Disposable? = null
-
     private val disposeHandler = RxTiPresenterDisposableHandler(this)
 
     override fun onAttachView(view: JourneyView) {
@@ -33,45 +32,57 @@ class JourneyPresenter @Inject constructor(
             // If the tracking was in progress, and the user disables it, then stop the journey
             trackingEnabled && !newLocationTrackingStatus -> stopJourney()
 
-            // If the user enables the tracking, than start tracking the journey
-            newLocationTrackingStatus -> trackJourney()
+            !newLocationTrackingStatus -> getLastLocation()
 
-            // If the tracking is disabled, and the user does not enable it, then just get the last
-            // location
-            else -> getLastLocation()
+            // If the user enables the tracking, than start tracking the journey
+            else -> trackJourney()
         }
 
         trackingEnabled = newLocationTrackingStatus
     }
 
     private fun getLastLocation() {
-        locationDisposable = locationRepository.getLocationUpdates()
+        disposeHandler.manageDisposable(locationRepository
+                .getLocationUpdates()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     view?.showCurrentLocationMapPlaceholder(it)
-                })
-        disposeHandler.manageViewDisposable(locationDisposable!!)
+                }))
     }
 
     private fun trackJourney() {
-        journeyDisposable = locationRepository.getJourneyLocationUpdates()
+        if (!trackingEnabled) {
+            disposeHandler.manageDisposable(journeyRepository
+                    // Start the journey
+                    .startJourney()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    // Show the popup to tell the user
+                    .subscribe({ view?.showJourneyStartedPopup() }))
+        }
+
+
+        disposeHandler.manageViewDisposable(journeyRepository
+                // Get all the locations for the current journey
+                .getCurrentJourneyLocations()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    // Be sure that the tracking is still enabled before showing the location
+                    // Be sure that the tracking is still enabled before showing the locations
                     if (trackingEnabled) view?.addLocationToCurrentJourney(it)
-                })
-        disposeHandler.manageViewDisposable(journeyDisposable!!)
+                }, { Timber.w(it) }))
     }
 
+
     private fun stopJourney() {
-        // Stop observing journey updates
-        journeyDisposable?.dispose()
-
-        // Clear the view journeys
-        view?.clearJourney()
-
+        disposeHandler.manageDisposable(journeyRepository.stopJourney()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    view?.clearJourney()
+                    view?.showJourneyEndedPopup()
+                }))
     }
 
 }
