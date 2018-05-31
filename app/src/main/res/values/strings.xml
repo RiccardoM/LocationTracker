@@ -8,4 +8,16 @@
     <string name="popup_location_tracking_stopped">Location tracking stopped</string>
     <string name="popup_journey_started">Journey started</string>
     <string name="popup_journey_ended">Journey ended</string>
+    <string name="start_time">Start time:</string>
+    <string name="end_time">End time:</string>
+    <string name="average_speed">Average speed:</string>
+    <string name="journey_details_end_position">End position</string>
+    <string name="journey_details_start_position">Start position</string>
+    <string name="duration">Duration:</string>
+    <string name="distance_traveled">Distance traveled:</string>
+    <string name="duration_meters">%.2f meters</string>
+    <string name="hours">%d hours</string>
+    <string name="minutes">%d minutes</string>
+    <string name="seconds">%d seconds</string>
+    <string name="speed_km_h">%.2f km/h</string>
 </resources>

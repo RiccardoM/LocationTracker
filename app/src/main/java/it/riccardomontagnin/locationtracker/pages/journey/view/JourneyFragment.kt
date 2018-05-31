@@ -22,6 +22,7 @@ import it.riccardomontagnin.locationtracker.model.event.JourneyStatusChangedEven
 import it.riccardomontagnin.locationtracker.model.event.ShowLocationTrackingStatusChangedEvent
 import it.riccardomontagnin.locationtracker.pages.journey.presenter.JourneyPresenter
 import it.riccardomontagnin.locationtracker.pages.journey.presenter.JourneyView
+import it.riccardomontagnin.locationtracker.toBitmapDescriptor
 import net.grandcentrix.thirtyinch.TiFragment
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -111,6 +112,7 @@ class JourneyFragment: TiFragment<JourneyPresenter, JourneyView>(), JourneyView,
         val marker = MarkerOptions()
                 .title(getString(R.string.map_marker_last_known_location))
                 .position(locationData)
+                .icon(R.drawable.ic_position_current.toBitmapDescriptor(activity!!))
 
         // Clear all the markers already present
         googleMap?.clear()

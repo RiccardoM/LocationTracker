@@ -6,6 +6,9 @@ import it.riccardomontagnin.locationtracker.repository.journeys.database.Journey
 import it.riccardomontagnin.locationtracker.repository.journeys.database.LocationDao
 import it.riccardomontagnin.locationtracker.repository.journeys.database.LocationTrackerDatabase
 
+/**
+ *
+ */
 @Module(includes = [DatabaseModule::class])
 object DaoModule {
 

@@ -6,12 +6,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import it.riccardomontagnin.locationtracker.R
 import it.riccardomontagnin.locationtracker.application.LocationTrackerApp
 import it.riccardomontagnin.locationtracker.injector.CoreComponent
 import it.riccardomontagnin.locationtracker.model.JourneyData
 import it.riccardomontagnin.locationtracker.model.event.JourneyStatusChangedEvent
+import it.riccardomontagnin.locationtracker.pages.journey_details.view.JourneyDetailsActivity
 import it.riccardomontagnin.locationtracker.pages.journey_list.presenter.JourneyListPresenter
 import it.riccardomontagnin.locationtracker.pages.journey_list.presenter.JourneyListView
 import net.grandcentrix.thirtyinch.TiFragment
@@ -68,6 +68,6 @@ class JourneyListFragment: TiFragment<JourneyListPresenter, JourneyListView>(), 
     }
 
     override fun showJourneyDetails(journey: JourneyData) {
-        Toast.makeText(activity, "Show details", Toast.LENGTH_LONG).show()
+        JourneyDetailsActivity.start(activity!!, journey)
     }
 }

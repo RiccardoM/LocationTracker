@@ -7,6 +7,9 @@ import it.riccardomontagnin.locationtracker.injector.DaggerCoreComponent
 import timber.log.Timber
 import kotlin.reflect.KClass
 
+/**
+ * Custom application class used in order to create static methods that are accessible everywhere.
+ */
 class LocationTrackerApp: Application() {
 
     override fun onCreate() {
