@@ -145,8 +145,9 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
      * @inheritDoc
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        @Suppress("WhenWithOnlyElse")
         return when (item.itemId) {
-            R.id.action_settings -> true
+//            R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
     }
