@@ -20,4 +20,5 @@
     <string name="minutes">%d minutes</string>
     <string name="seconds">%d seconds</string>
     <string name="speed_km_h">%.2f km/h</string>
+    <string name="activity_journey_details">Journey details</string>
 </resources>

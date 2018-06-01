@@ -9,6 +9,9 @@ import net.grandcentrix.thirtyinch.rx2.RxTiPresenterDisposableHandler
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * Class representing the presenter of a generic view that displays the data of the current journey.
+ */
 class JourneyPresenter @Inject constructor(
         private val locationRepository: LocationRepository,
         private val journeyRepository: JourneyRepository
@@ -17,6 +20,9 @@ class JourneyPresenter @Inject constructor(
     private var trackingEnabled: Boolean = false
     private val disposeHandler = RxTiPresenterDisposableHandler(this)
 
+    /**
+     * Called when the view is attached to the presenter.
+     */
     override fun onAttachView(view: JourneyView) {
         super.onAttachView(view)
 
@@ -27,6 +33,11 @@ class JourneyPresenter @Inject constructor(
 
     }
 
+    /**
+     * Enables or disables the tracking location, based on the value given.
+     * @param newLocationTrackingStatus: `true` if the location tracking should be enabled, `false`
+     * if the tracking should be disabled.
+     */
     fun setLocationTrackingEnabled(newLocationTrackingStatus: Boolean) {
         when {
             // If the tracking was in progress, and the user disables it, then stop the journey
@@ -41,6 +52,9 @@ class JourneyPresenter @Inject constructor(
         trackingEnabled = newLocationTrackingStatus
     }
 
+    /**
+     * Retrieves the last known location and displays it inside the map.
+     */
     private fun getLastLocation() {
         disposeHandler.manageDisposable(locationRepository
                 .getLocationUpdates()
@@ -51,15 +65,19 @@ class JourneyPresenter @Inject constructor(
                 }))
     }
 
+    /**
+     * Tracks the journey that the user is travelling and displays the updates inside the view.
+     */
     private fun trackJourney() {
         if (!trackingEnabled) {
+            // Start the journey iff it has not yet been started
             disposeHandler.manageDisposable(journeyRepository
                     // Start the journey
                     .startJourney()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     // Show the popup to tell the user
-                    .subscribe({ view?.showJourneyStartedPopup() }))
+                    .subscribe({ view?.showJourneyStartedPopup() }, { Timber.w(it) }))
         }
 
 
@@ -75,10 +93,16 @@ class JourneyPresenter @Inject constructor(
     }
 
 
+    /**
+     * Stops the journey and signals the successful stop to the view in order to notify the user.
+     */
     private fun stopJourney() {
-        disposeHandler.manageDisposable(journeyRepository.stopJourney()
+        disposeHandler.manageDisposable(journeyRepository
+                // Stop the journey
+                .stopJourney()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                // Clear the map from the previous journey data and notify the user using a popup
                 .subscribe({
                     view?.clearJourney()
                     view?.showJourneyEndedPopup()

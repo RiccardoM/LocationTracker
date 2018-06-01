@@ -6,6 +6,17 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 27
+
+    signingConfigs {
+        release {
+            keyAlias LOCATION_TRACKER_KEY_ALIAS
+            keyPassword LOCATION_TRACKER_KEY_PASSWORD
+            storeFile file(LOCATION_TRACKER_KEYSTORE_FILE)
+            storePassword LOCATION_TRACKER_KEYSTORE_PASSWORD
+        }
+    }
+
+
     defaultConfig {
         applicationId "it.riccardomontagnin.locationtracker"
         minSdkVersion 21
@@ -16,8 +27,9 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 

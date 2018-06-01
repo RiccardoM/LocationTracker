@@ -14,7 +14,7 @@ class JourneysAdapter : RecyclerView.Adapter<JourneyViewHolder>() {
 
     fun setJourneys(journeys: List<JourneyData>) {
         this.journeys.clear()
-        this.journeys.addAll(journeys.sortedByDescending { it.date })
+        this.journeys.addAll(journeys.sortedByDescending { it.startingDate })
         notifyDataSetChanged()
     }
 
@@ -35,7 +35,7 @@ class JourneysAdapter : RecyclerView.Adapter<JourneyViewHolder>() {
         val journey = journeys[position]
 
         holder.setName("Journey ${journeys.size - position}")
-        holder.setDate(DateFormat.getDateTimeInstance().format(journey.date))
+        holder.setDate(DateFormat.getDateTimeInstance().format(journey.startingDate))
         holder.itemView.setOnClickListener { onJourneyClicked(journey) }
 
     }

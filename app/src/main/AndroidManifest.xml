@@ -27,6 +27,7 @@
         </activity>
 
         <activity
+            android:label="@string/activity_journey_details"
             android:name=".pages.journey_details.view.JourneyDetailsActivity"
             android:theme="@style/AppTheme" />
 

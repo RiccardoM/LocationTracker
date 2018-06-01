@@ -103,7 +103,7 @@ class JourneyRepositoryImpl @Inject constructor(
                                 .toList()
 
                         // Return the JourneyData object
-                        JourneyData(locations = journeyLocations, date = journey.date)
+                        JourneyData(locations = journeyLocations, startingDate = journey.date)
                     }
                     .toList()
 

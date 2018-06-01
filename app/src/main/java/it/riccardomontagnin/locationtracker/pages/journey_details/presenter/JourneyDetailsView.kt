@@ -3,6 +3,10 @@ package it.riccardomontagnin.locationtracker.pages.journey_details.presenter
 import it.riccardomontagnin.locationtracker.model.LocationData
 import net.grandcentrix.thirtyinch.TiView
 
+/**
+ * Interface representing a generic view inside which all the details of a given journey are
+ * displayed to the user.
+ */
 interface JourneyDetailsView: TiView {
 
     /**

@@ -29,8 +29,6 @@ import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
 
-
-
 /**
  * Fragment representing the view that the user sees when he wants to visualize its current location
  * or when a new journey is in progress and he wants to visualize the path he has followed.
@@ -43,8 +41,14 @@ class JourneyFragment: TiFragment<JourneyPresenter, JourneyView>(), JourneyView,
 
     @Inject lateinit var presenter: JourneyPresenter
 
+    /**
+     * @inheritDoc
+     */
     override fun providePresenter(): JourneyPresenter = presenter
 
+    /**
+     * @inheritDoc
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         // Inject dependencies
         DaggerJourneyComponent.builder()
@@ -54,6 +58,9 @@ class JourneyFragment: TiFragment<JourneyPresenter, JourneyView>(), JourneyView,
         super.onCreate(savedInstanceState)
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
@@ -65,45 +72,70 @@ class JourneyFragment: TiFragment<JourneyPresenter, JourneyView>(), JourneyView,
         return view
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onResume() {
         super.onResume()
         mapView?.onResume()
         EventBus.getDefault().register(this)
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onPause() {
         EventBus.getDefault().unregister(this)
         mapView?.onPause()
         super.onPause()
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onDestroy() {
         mapView?.onDestroy()
         super.onDestroy()
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onLowMemory() {
         super.onLowMemory()
         mapView?.onLowMemory()
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         mapView?.onSaveInstanceState(outState)
     }
 
+    /**
+     * Receives all the [ShowLocationTrackingStatusChangedEvent] events that are emitted.
+     * They are caught because they should notify the presenter of the changes.
+     */
     @Subscribe(sticky = true)
     internal fun locationTrackingStatusListener(event: ShowLocationTrackingStatusChangedEvent) {
         EventBus.getDefault().removeStickyEvent(event)
         presenter.setLocationTrackingEnabled(event.trackingEnabled)
     }
 
+    /**
+     * @inheritDoc
+     */
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap?) {
         // Save the GoogleMap instance so we can later add markers or track the user journey on it
         this.googleMap = googleMap
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun showCurrentLocationMapPlaceholder(location: LocationData) {
         // Create the LatLong object in order to represent a location on the map
         val locationData = LatLng(location.latitude, location.longitude)
@@ -124,6 +156,9 @@ class JourneyFragment: TiFragment<JourneyPresenter, JourneyView>(), JourneyView,
         googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(locationData, 15.0f))
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun addLocationToCurrentJourney(location: LocationData) {
         val point = LatLng(location.latitude, location.longitude)
         journeyPoints.add(point)
@@ -131,6 +166,9 @@ class JourneyFragment: TiFragment<JourneyPresenter, JourneyView>(), JourneyView,
         redrawPath(location)
     }
 
+    /**
+     * Redraws the entire path that is displayed on the map in order to update it.
+     */
     private fun redrawPath(location: LocationData? = null) {
         // Clear all the markers and lines
         googleMap?.clear()
@@ -154,6 +192,9 @@ class JourneyFragment: TiFragment<JourneyPresenter, JourneyView>(), JourneyView,
 
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun clearJourney() {
         val lastLocation = journeyPoints
                 .lastOrNull()
@@ -163,10 +204,16 @@ class JourneyFragment: TiFragment<JourneyPresenter, JourneyView>(), JourneyView,
         redrawPath(lastLocation)
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun showJourneyStartedPopup() {
         Toast.makeText(activity!!, R.string.popup_journey_started, Toast.LENGTH_LONG).show()
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun showJourneyEndedPopup() {
         EventBus.getDefault().postSticky(JourneyStatusChangedEvent(false))
         Toast.makeText(activity!!, R.string.popup_journey_ended, Toast.LENGTH_LONG).show()
