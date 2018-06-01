@@ -22,7 +22,10 @@ import net.grandcentrix.thirtyinch.TiActivity
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
-
+/**
+ * Implementation of [MainView].
+ * @see MainView
+ */
 class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
 
     private lateinit var fab: FloatingActionButton
@@ -30,8 +33,14 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
 
     @Inject lateinit var presenter: MainPresenter
 
+    /**
+     * @inheritDoc
+     */
     override fun providePresenter(): MainPresenter = presenter
 
+    /**
+     * @inheritDoc
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         // Inject the dependencies
         DaggerMainComponent.builder()
@@ -81,6 +90,9 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
 
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun requestPermissions() {
         // Simple inline function to check if a permissions has been granted or not
         // @param permission: String representing the permission to check
@@ -104,27 +116,35 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             PERMISSION_REQUEST_CODE -> {
+                // Check that the results are not empty and that the permission has been granted
                 val permissionAccepted = grantResults.isNotEmpty() &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED
 
+                // Notify the presenter
                 presenter.setLocationActivated(permissionAccepted)
             }
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
@@ -139,7 +159,10 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
         tabLayout.getTabAt(0)?.select()
     }
 
-    override fun setJourneyInProgressVisible(enabled: Boolean) {
+    /**
+     * @inheritDoc
+     */
+    override fun setJourneyInProgress(enabled: Boolean) {
         // Create the object representing the even that tells the real time journey should be
         // displayed
         val event = ShowLocationTrackingStatusChangedEvent(enabled)
@@ -157,10 +180,25 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
 
 
     companion object {
+
+        /**
+         * Number of the request code that is sent in order to ask the user for permission to track
+         * his location. The random value should ensure that no other request coming has the same
+         * code.
+         */
         private const val PERMISSION_REQUEST_CODE = 156
 
+        /**
+         * List of icons that should be displayed instead of the tab titles.
+         */
         private val TAB_ICONS = listOf(R.drawable.ic_tab_map, R.drawable.ic_tab_journey_list)
+
+        /**
+         * List of title that are associated with the tabs present inside the view and that will
+         * be used as the activity name when the user scrolls through the tabs.
+         */
         private val TAB_TITLES = listOf(R.string.tab_title_map, R.string.tab_title_journey_list)
+
     }
 
 }

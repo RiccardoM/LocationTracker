@@ -7,6 +7,9 @@ import net.grandcentrix.thirtyinch.TiView
  */
 interface MainView: TiView {
 
+    /**
+     * Asks the user about the permission to track his location.
+     */
     fun requestPermissions()
 
     /**
@@ -20,6 +23,6 @@ interface MainView: TiView {
      * @param enabled: `true` if the user should see real time the journey he is doing, `false`
      * otherwise.
      */
-    fun setJourneyInProgressVisible(enabled: Boolean)
+    fun setJourneyInProgress(enabled: Boolean)
 
 }
