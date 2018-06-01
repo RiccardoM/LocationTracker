@@ -53,9 +53,7 @@ class JourneyRepositoryImpl @Inject constructor(
         return Completable.create { emitter ->
             // Set the journey as completed
             val roomJourney = journeyDao.findById(currentJourneyId).copy(completed = true)
-            journeyDao.insert(roomJourney)
-
-
+            journeyDao.update(roomJourney)
 
             // Clean the journey id
             currentJourneyId = ""

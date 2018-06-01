@@ -1,11 +1,15 @@
 package it.riccardomontagnin.locationtracker.application
 
 import android.app.Application
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
 import it.riccardomontagnin.locationtracker.BuildConfig
 import it.riccardomontagnin.locationtracker.injector.CoreComponent
 import it.riccardomontagnin.locationtracker.injector.DaggerCoreComponent
 import timber.log.Timber
 import kotlin.reflect.KClass
+
+
 
 /**
  * Custom application class used in order to create static methods that are accessible everywhere.
@@ -18,6 +22,9 @@ class LocationTrackerApp: Application() {
         if (BuildConfig.DEBUG){
             // Start the debug logging if the application is in debug mode
             Timber.plant(Timber.DebugTree())
+        } else {
+            // Install Crashlytics if in production
+            Fabric.with(this, Crashlytics())
         }
 
         // Add  the CoreComponent instance as a singleton component

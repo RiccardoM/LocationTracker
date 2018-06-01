@@ -110,7 +110,7 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
         presenter.setLocationActivated(permissionGranted)
 
         // Check if the fine location permission has been granted
-        if (permissionGranted) {
+        if (!permissionGranted) {
             // If it has not, then request them
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE)
         }

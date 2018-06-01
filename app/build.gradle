@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 27
@@ -80,6 +81,11 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$room_version"
     kapt "android.arch.persistence.room:compiler:$room_version"
     implementation "android.arch.persistence.room:rxjava2:$room_version"
+
+    // Crashlytics for crash identifications
+    compile('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
+        transitive = true;
+    }
 
     // Testing libraries
     testImplementation 'junit:junit:4.12'

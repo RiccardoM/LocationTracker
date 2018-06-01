@@ -36,6 +36,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCtVsdQaYZsJtQ_JaNEEKCQfqmNiSwGRSQ"/>
 
+        <!-- Crashlytics API key -->
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="a9a033917900acc05d38a96a2b32835a1e56d05d" />
+
         <!-- Location service to get the location on the background -->
         <service android:name=".service.LocationService"
             android:enabled="true"

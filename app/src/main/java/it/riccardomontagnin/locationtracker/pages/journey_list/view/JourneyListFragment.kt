@@ -82,7 +82,8 @@ class JourneyListFragment: TiFragment<JourneyListPresenter, JourneyListView>(), 
      * that have been emitted before the listening started.
      * @param event: Object representing the most recent event emitted.
      */
-    @Subscribe(sticky = true) fun journeyStatusChanged(event: JourneyStatusChangedEvent) {
+    @Subscribe(sticky = true)
+    internal fun journeyStatusChanged(event: JourneyStatusChangedEvent) {
         // Remove the sticky event in order to not catch it again the next time
         EventBus.getDefault().removeStickyEvent(event)
 
