@@ -50,17 +50,25 @@ class JourneyRepositoryImpl @Inject constructor(
     }
 
     override fun stopJourney(): Completable {
-        // Clean the journey id
-        currentJourneyId = ""
+        return Completable.create { emitter ->
+            // Set the journey as completed
+            val roomJourney = journeyDao.findById(currentJourneyId).copy(completed = true)
+            journeyDao.insert(roomJourney)
 
-        // Complete the observable
-        currentJourneyLocationsObservable.onComplete()
 
-        // Dispose the observable for the previous journey
-        locationsDisposable?.dispose()
 
-        // Return a completable that completes
-        return Completable.complete()
+            // Clean the journey id
+            currentJourneyId = ""
+
+            // Complete the observable
+            currentJourneyLocationsObservable.onComplete()
+
+            // Dispose the observable for the previous journey
+            locationsDisposable?.dispose()
+
+            // Complete
+            emitter.onComplete()
+        }
     }
 
     private fun saveAndEmitLocation(locationData: LocationData) {
@@ -83,11 +91,13 @@ class JourneyRepositoryImpl @Inject constructor(
         return currentJourneyLocationsObservable
     }
 
-    override fun getJourneys(): Single<List<JourneyData>> {
+    override fun getJourneys(getInProgress: Boolean): Single<List<JourneyData>> {
         return Single.create { emitter ->
-            // Get all the journeys from the database
-            val roomJourneys = journeyDao.getAll()
-
+            // Get all the journeys from the database based on what the user asks for
+            val roomJourneys = when (getInProgress) {
+                true -> journeyDao.getAll()
+                false -> journeyDao.getAll().filter { it.completed }
+            }
 
             val journeys = roomJourneys.asSequence()
                     // Get all the locations of the journey, and map the journey and its locations

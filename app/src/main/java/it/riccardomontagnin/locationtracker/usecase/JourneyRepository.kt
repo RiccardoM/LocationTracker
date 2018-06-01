@@ -10,5 +10,5 @@ interface JourneyRepository {
     fun startJourney(): Completable
     fun stopJourney(): Completable
     fun getCurrentJourneyLocations(): Observable<LocationData>
-    fun getJourneys(): Single<List<JourneyData>>
+    fun getJourneys(getInProgress: Boolean = false): Single<List<JourneyData>>
 }

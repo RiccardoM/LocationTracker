@@ -19,14 +19,24 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
+/**
+ * Fragment representing the implementation of [JourneyListView].
+ * @see JourneyListView
+ */
 class JourneyListFragment: TiFragment<JourneyListPresenter, JourneyListView>(), JourneyListView {
 
     @Inject lateinit var presenter: JourneyListPresenter
 
     private lateinit var adapter: JourneysAdapter
 
+    /**
+     * @inheritDoc
+     */
     override fun providePresenter(): JourneyListPresenter = presenter
 
+    /**
+     * @inheritDoc
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         DaggerJourneyListComponent.builder()
                 .coreComponent(LocationTrackerApp.getComponent(CoreComponent::class))
@@ -34,6 +44,9 @@ class JourneyListFragment: TiFragment<JourneyListPresenter, JourneyListView>(), 
         super.onCreate(savedInstanceState)
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_journey_list, container, false)
@@ -48,26 +61,48 @@ class JourneyListFragment: TiFragment<JourneyListPresenter, JourneyListView>(), 
         return view
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onResume() {
         super.onResume()
         EventBus.getDefault().register(this)
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun onPause() {
         super.onPause()
         EventBus.getDefault().unregister(this)
     }
 
+    /**
+     * Listens for all the [JourneyStatusChangedEvent] that might be emitted, catching also the ones
+     * that have been emitted before the listening started.
+     * @param event: Object representing the most recent event emitted.
+     */
     @Subscribe(sticky = true) fun journeyStatusChanged(event: JourneyStatusChangedEvent) {
+        // Remove the sticky event in order to not catch it again the next time
         EventBus.getDefault().removeStickyEvent(event)
+
+        // If the event tells us that the journey is not in progress than update the list
         if (!event.journeyInProgress) presenter.updateList()
+
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun setJourneys(journeys: List<JourneyData>) {
         adapter.setJourneys(journeys)
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun showJourneyDetails(journey: JourneyData) {
         JourneyDetailsActivity.start(activity!!, journey)
     }
+
 }

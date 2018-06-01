@@ -7,5 +7,6 @@ import java.util.*
 @Entity(tableName = "journeys")
 data class RoomJourney (
         @PrimaryKey val id: String,
-        val date: Date
+        val date: Date,
+        val completed: Boolean = false
 )

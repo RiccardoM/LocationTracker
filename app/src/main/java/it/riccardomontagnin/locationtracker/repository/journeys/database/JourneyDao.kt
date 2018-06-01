@@ -10,6 +10,9 @@ interface JourneyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(journey: RoomJourney)
 
+    @Query("SELECT * FROM journeys WHERE id=:id")
+    fun findById(id: String): RoomJourney
+
     @Query("SELECT * from journeys")
     fun getAll(): List<RoomJourney>
 
