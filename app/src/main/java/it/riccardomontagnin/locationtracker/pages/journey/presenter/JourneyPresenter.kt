@@ -1,6 +1,7 @@
 package it.riccardomontagnin.locationtracker.pages.journey.presenter
 
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import it.riccardomontagnin.locationtracker.usecase.JourneyRepository
 import it.riccardomontagnin.locationtracker.usecase.LocationRepository
@@ -17,7 +18,20 @@ class JourneyPresenter @Inject constructor(
         private val journeyRepository: JourneyRepository
 ): TiPresenter<JourneyView>() {
 
+    /**
+     * Variable that tells us if the journey tracking is currently in progress or not
+     */
     private var trackingEnabled: Boolean = false
+
+    /**
+     * Disposable connected to the live update of journey's path
+     */
+    private var journeyDisposable: Disposable? = null
+
+    /**
+     * Variable that will handle all the disposables that we will create based on the life cycle
+     * of the view or the life cycle of the presenter
+     */
     private val disposeHandler = RxTiPresenterDisposableHandler(this)
 
     /**
@@ -40,12 +54,12 @@ class JourneyPresenter @Inject constructor(
      */
     fun setLocationTrackingEnabled(newLocationTrackingStatus: Boolean) {
         when {
-            // If the tracking was in progress, and the user disables it, then stop the journey
+        // If the tracking was in progress, and the user disables it, then stop the journey
             trackingEnabled && !newLocationTrackingStatus -> stopJourney()
 
             !newLocationTrackingStatus -> getLastLocation()
 
-            // If the user enables the tracking, than start tracking the journey
+        // If the user enables the tracking, than start tracking the journey
             else -> trackJourney()
         }
 
@@ -65,6 +79,7 @@ class JourneyPresenter @Inject constructor(
                 }))
     }
 
+
     /**
      * Tracks the journey that the user is travelling and displays the updates inside the view.
      */
@@ -80,8 +95,15 @@ class JourneyPresenter @Inject constructor(
                     .subscribe({ view?.showJourneyStartedPopup() }, { Timber.w(it) }))
         }
 
+        // Stop listening to location events
+        journeyDisposable?.dispose()
 
-        disposeHandler.manageViewDisposable(journeyRepository
+        // Clear the view wiping out all the locations tracked since now
+        view?.clearJourney()
+
+        // Start listening again to the location updates, and get all those that have been emitted
+        // since now
+        journeyDisposable = journeyRepository
                 // Get all the locations for the current journey
                 .getCurrentJourneyLocations()
                 .subscribeOn(Schedulers.io())
@@ -89,7 +111,10 @@ class JourneyPresenter @Inject constructor(
                 .subscribe({
                     // Be sure that the tracking is still enabled before showing the locations
                     if (trackingEnabled) view?.addLocationToCurrentJourney(it)
-                }, { Timber.w(it) }))
+                }, { Timber.w(it) })
+
+        disposeHandler.manageDisposable(journeyDisposable!!)
+
     }
 
 

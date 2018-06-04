@@ -140,7 +140,7 @@ class JourneyDetailsActivity: TiActivity<JourneyDetailsPresenter, JourneyDetails
         // Build a string representing an easy-to-read representation of the values computed before
         val stringBuilder = StringBuilder()
         if (hours > 0) stringBuilder.append(getString(R.string.hours, hours)).append(" ")
-        if (hours > 0 || minutes > 0) stringBuilder.append(getString(R.string.minutes)).append(" ")
+        if (hours > 0 || minutes > 0) stringBuilder.append(getString(R.string.minutes, minutes)).append(" ")
         stringBuilder.append(getString(R.string.seconds, seconds))
 
         // Display the built string
@@ -158,11 +158,10 @@ class JourneyDetailsActivity: TiActivity<JourneyDetailsPresenter, JourneyDetails
      * @inheritDoc
      */
     override fun drawLocations(locations: List<LocationData>) {
-        // Clear the map from the previous path, if any exist
-        googleMap?.clear()
-
         // Che to be sure that there is at least one location tracked during the journey
         if (locations.isNotEmpty()) {
+            // Clear the map from the previous path, if any exist
+            googleMap?.clear()
 
             // Create the marker that displays the position of the first location tracked
             val startMarker = MarkerOptions()

@@ -17,6 +17,9 @@ import it.riccardomontagnin.locationtracker.usecase.LocationRepository
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * @see JourneyRepositoryImpl
+ */
 class JourneyRepositoryImpl @Inject constructor(
         private val journeyDao: JourneyDao,
         private val locationDao: LocationDao,
@@ -27,6 +30,9 @@ class JourneyRepositoryImpl @Inject constructor(
     private var currentJourneyId = ""
     private var currentJourneyLocationsObservable = ReplaySubject.create<LocationData>()
 
+    /**
+     * @inheritDoc
+     */
     override fun startJourney(): Completable {
         // Create a unique journey id
         currentJourneyId = System.currentTimeMillis().toString()
@@ -49,6 +55,9 @@ class JourneyRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun stopJourney(): Completable {
         return Completable.create { emitter ->
             // Set the journey as completed
@@ -69,6 +78,9 @@ class JourneyRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     private fun saveAndEmitLocation(locationData: LocationData) {
         // Convert the location data
         val location = RoomLocation(
@@ -85,10 +97,16 @@ class JourneyRepositoryImpl @Inject constructor(
         currentJourneyLocationsObservable.onNext(locationData)
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun getCurrentJourneyLocations(): Observable<LocationData> {
         return currentJourneyLocationsObservable
     }
 
+    /**
+     * @inheritDoc
+     */
     override fun getJourneys(getInProgress: Boolean): Single<List<JourneyData>> {
         return Single.create { emitter ->
             // Get all the journeys from the database based on what the user asks for
