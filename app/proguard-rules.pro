@@ -29,5 +29,4 @@
 
 # Keep the SQLCipher classes to avoid crahses due to unfound classes
 -keep class net.sqlcipher.** { *; }
--keep class net.sqlcipher.database.* { *; }
 
