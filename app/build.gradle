@@ -22,8 +22,8 @@ android {
         applicationId "it.riccardomontagnin.locationtracker"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 7
+        versionName "0.0.$versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -83,6 +83,9 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
         transitive = true;
     }
+
+    // CWAC-SafeRoom to encrypt the database
+    implementation "com.commonsware.cwac:saferoom:0.4.1"
 
     // Testing libraries
     testImplementation 'junit:junit:4.12'

@@ -20,9 +20,14 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# In order to make EventBus work properly
+# Avoid shrinking some classes in order to make EventBus work properly
 -keepattributes *Annotation*
 -keepclassmembers class ** {
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# Keep the SQLCipher classes to avoid crahses due to unfound classes
+-keep class net.sqlcipher.** { *; }
+-keep class net.sqlcipher.database.* { *; }
+

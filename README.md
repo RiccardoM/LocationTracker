@@ -48,11 +48,18 @@ dependency inversion principle, which is implemented also using the dependency i
 using Dagger 2.
 
 ### Data encryption
+#### Database encryption
 Currently the data that is saved inside the database is not encrypted. In order to encyrpt it and
 make it more safe for the user, we could use [CWAC-SafeRoom](https://github.com/commonsguy/cwac-saferoom),
 a library that implements the Room ability to work with other SQL databases by using [SQLCipher](https://www.zetetic.net/sqlcipher/sqlcipher-for-android/).
 By using this library, we should be able to encrypt the database using the 256-bit AES which should
 grant enough security for the data that we store.
+
+#### Column encryption
+Another approach in order to encrypt the data could be to encrypt individually the single cells tha are written inside the
+database instead of ecnrypting the whole database at once. This could provide a safer way to
+store the data, but could also lead to a overhead during data saving and loading. While this method provides a more atomic
+way when it comes to choose what to ecnrypt and what to not, it often leads to a 5-6% overhead on common operations.
 
 ### Data persistence
 Currently data is saved inside the Room database which is wipe when the user uninstalls the
